@@ -1,8 +1,22 @@
 name: github-actions
-on: push
+on:
+  - push
+
 jobs:
-  my-job:
+  build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # we want to test our package on several versions of Python
+        python-version: [3.12]
     steps:
-      - name: first-step
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: |
+          pip install poetry
+          poetry install
+      - name: Run pytest
         run: poetry run pytest
